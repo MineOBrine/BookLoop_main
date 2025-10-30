@@ -6,33 +6,45 @@ export default function NotificationModal({
   show,
   onClose,
   message = "",
-  type = "success", // can be "success", "error", "info"
+  type = "info", // success | error | info
 }) {
   if (!show) return null;
 
-  // Define styles based on type
   const getTitle = () => {
     switch (type) {
       case "error":
         return "❌ Error";
-      case "info":
-        return "ℹ️ Info";
       case "success":
         return "✅ Success";
-      default :
-        return "Something";
+      case "info":
+      default:
+        return "ℹ️ Info";
+    }
+  };
+
+  const getClassName = () => {
+    switch (type) {
+      case "error":
+        return "modal-error";
+      case "success":
+        return "modal-success";
+      case "info":
+      default:
+        return "modal-info";
     }
   };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div
-        className="modal-content"
+        className={`modal-content ${getClassName()}`}
         onClick={(e) => e.stopPropagation()}
       >
         <h3>{getTitle()}</h3>
         <p>{message}</p>
-        <button onClick={onClose}>OK</button>
+        <button onClick={onClose} className="modal-btn">
+          OK
+        </button>
       </div>
     </div>
   );

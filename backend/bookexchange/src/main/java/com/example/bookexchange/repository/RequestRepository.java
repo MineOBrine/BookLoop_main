@@ -1,4 +1,3 @@
-//repository/RequestRepository.java//
 package com.example.bookexchange.repository;
 
 import com.example.bookexchange.model.Request;
@@ -9,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Long> {
-    List<Request> findByRequesterEmail(String requesterEmail); // for Profile page
+    List<Request> findByRequesterEmail(String requesterEmail);
     List<Request> findByLocationContainingIgnoreCase(String location);
     List<Request> findByTitleContainingIgnoreCase(String title);
 }

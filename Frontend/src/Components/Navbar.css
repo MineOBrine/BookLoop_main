@@ -1,23 +1,25 @@
 /* src/Components/Navbar.css */
 
+/* === NAVBAR CONTAINER === */
 .home-navbar {
-  /* background: rgba(255, 255, 255, 0.35); */
+  background: rgba(65, 64, 64, 0.12);
   backdrop-filter: blur(12px) saturate(150%);
   -webkit-backdrop-filter: blur(12px) saturate(150%);
-  padding: 0rem 2rem;
+  padding: 0.8rem 2rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   position: fixed;
-  width: flex;
+  width: 100%;
   z-index: 1000;
 }
 
+/* Smooth scrolling offset */
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 60.5px; /* height of navbar */
+  scroll-padding-top: 60.5px;
 }
 
-
+/* === BRAND / LOGO === */
 .home-navbar .navbar-brand {
   font-weight: 800;
   letter-spacing: -0.5px;
@@ -26,23 +28,42 @@ html {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
+  font-size: 1.6rem;
 }
 
+/* === NAV LINKS === */
 .home-navbar .nav-link {
   color: #f5f5dc;
   font-weight: 500;
-  border-color: #000000fe;
+  font-size: 1.05rem;
   transition: all 0.3s ease;
+  padding: 8px 16px;
+  border-radius: 999px; /* pill shape */
 }
 
+/* Hover effect */
 .home-navbar .nav-link:hover {
-  color: #f5f5dc;
-  text-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.08);
 }
 
+/* Active link */
+.home-navbar .nav-link.active {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.3);
+}
+
+/* === BUTTONS (Primary & Outline) === */
 .home-navbar .btn-primary {
   background-color: #1e2b47 !important;
+  font-size: 1.05rem;
+  font-weight: 600;
   border: none;
+  border-radius: 999px; /* pill */
+  padding: 8px 18px;
   transition: all 0.3s ease;
 }
 
@@ -52,25 +73,52 @@ html {
   box-shadow: 0 6px 18px rgba(30, 43, 71, 0.4);
 }
 
+/* Outline Button */
 .home-navbar .btn-outline-light {
   color: #f5f5dc;
-  border-color: #f5f5dc;
+  border: 1.5px solid #f5f5dc;
+  font-size: 1.05rem;
+  font-weight: 600;
+  border-radius: 999px;
   transition: all 0.3s ease;
+  padding: 8px 18px;
 }
 
 .home-navbar .btn-outline-light:hover {
   background-color: #f5f5dc;
   color: #1e2b47;
   transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(245, 245, 220, 0.3);
 }
 
+/* === SIGN OUT BUTTON === */
 .tabs .signout-btn {
-  background: rgba(148, 2, 2, 0.35);
+  background: rgba(255, 42, 42, 0.15);
   color: #ff4d4d;
+  border: 1.5px solid rgba(255, 77, 77, 0.3);
+  border-radius: 999px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  padding: 8px 18px;
 }
 
 .tabs .signout-btn:hover {
   background: rgba(255, 42, 42, 0.25);
   color: #ff0101;
-  box-shadow: 0 8px 20px rgba(255, 0, 0, 0.2);
+  box-shadow: 0 8px 20px rgba(255, 0, 0, 0.25);
+  transform: translateY(-1px);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .home-navbar {
+    padding: 0.8rem 1.5rem;
+  }
+
+  .home-navbar .nav-link,
+  .home-navbar .btn-primary,
+  .home-navbar .btn-outline-light {
+    font-size: 1rem;
+    padding: 6px 14px;
+  }
 }

@@ -23,9 +23,9 @@ export default function Upload() {
 
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const [modalType, setModalType] = useState("info"); // success | error | info
 
   const uploadCategories = [...categories.filter((c) => c !== "Other"), "Other"];
-
   const priceEstimator = { good: "₹150–200", fair: "₹100–150", new: "₹200–250" };
   const borrowFeeEstimator = { good: "₹30", fair: "₹20", new: "₹40" };
 
@@ -63,18 +63,21 @@ export default function Upload() {
 
     if (!user) {
       setModalMessage("⚠️ Please register or login to upload a book.");
+      setModalType("info");
       setShowModal(true);
       return;
     }
 
     if (!formData.category) {
       setModalMessage("⚠️ Please select a category.");
+      setModalType("info");
       setShowModal(true);
       return;
     }
 
     if (formData.category === "Other" && !formData.customCategory.trim()) {
       setModalMessage("⚠️ Please enter a custom category.");
+      setModalType("info");
       setShowModal(true);
       return;
     }
@@ -95,19 +98,31 @@ export default function Upload() {
       payload.append("owner", user.username);
       payload.append("ownerEmail", user.email);
       payload.append("ownerPhone", user.phone);
-      if (formData.image) {
-        payload.append("image", formData.image);
-      }
+      if (formData.image) payload.append("image", formData.image);
 
-      const res = await fetch("http://localhost:8080/api/books", {
+      console.log("📤 Uploading book with data:");
+      console.log("Auth header:", `Bearer ${user?.token}`);
+
+      for (let [k, v] of payload.entries()) console.log(`${k}:`, v);
+
+      const res = await fetch("http://localhost:8081/api/books", {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${user?.token}`, // ✅ include JWT token
+        },
         body: payload,
       });
 
-      if (!res.ok) throw new Error("Failed to upload book");
-      else setModalMessage("✅ Book uploaded successfully!");
+      const data = await res.text();
+      console.log("📦 Upload response:", res.status, data);
+
+      if (!res.ok) throw new Error(data || "Failed to upload book");
+
+      setModalMessage("✅ Book uploaded successfully!");
+      setModalType("success");
       setShowModal(true);
 
+      // Reset form
       setFormData({
         title: "",
         author: "",
@@ -119,17 +134,16 @@ export default function Upload() {
         image: null,
       });
     } catch (err) {
-      console.error("Upload error:", err);
-      setModalMessage("❌ Failed to upload book. Try again.");
+      console.error("❌ Upload error:", err);
+      setModalMessage("❌ Failed to upload book. Please try again.");
+      setModalType("error");
       setShowModal(true);
     }
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
-    if (modalMessage.includes("✅")) {
-      navigate("/listings");
-    }
+    if (modalType === "success") navigate("/listings");
   };
 
   return (
@@ -161,7 +175,6 @@ export default function Upload() {
             className="pill-input"
           />
 
-          {/* Bootstrap Dropdown - Category */}
           <select
             name="category"
             value={formData.category}
@@ -189,7 +202,6 @@ export default function Upload() {
             />
           )}
 
-          {/* Bootstrap Dropdown - Condition */}
           <select
             name="condition"
             value={formData.condition}
@@ -202,7 +214,6 @@ export default function Upload() {
             <option value="new">Like New</option>
           </select>
 
-          {/* Bootstrap Dropdown - Buy/Borrow */}
           <select
             name="type"
             value={formData.type}
@@ -248,6 +259,7 @@ export default function Upload() {
         show={showModal}
         onClose={handleCloseModal}
         message={modalMessage}
+        type={modalType}
       />
     </div>
   );

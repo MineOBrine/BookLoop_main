@@ -1,4 +1,3 @@
-// src/context/UserContext.jsx
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 const UserContext = createContext();
@@ -15,7 +14,8 @@ export const UserProvider = ({ children }) => {
 
     if (token && storedUser) {
       try {
-        setUser(JSON.parse(storedUser));
+        const parsedUser = JSON.parse(storedUser);
+        setUser({ ...parsedUser, token }); // ✅ ensure token persists in user object
       } catch (err) {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
@@ -72,7 +72,7 @@ export const UserProvider = ({ children }) => {
     // ✅ Save token to localStorage
     localStorage.setItem("token", data.token);
 
-    // --- Build full user object ---
+    // ✅ Build full user object (includes token)
     const fullUser = {
       email,
       name: data.name,
@@ -80,13 +80,14 @@ export const UserProvider = ({ children }) => {
       college: data.college,
       phone: data.phone || "",
       interests: data.interests || [],
+      token: data.token, // 🟢 crucial for uploads / auth requests
     };
 
     // Save user to localStorage and state
     localStorage.setItem("user", JSON.stringify(fullUser));
     setUser(fullUser);
 
-    return data.token; // optional
+    return data.token;
   };
 
   // --- Logout ---

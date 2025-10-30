@@ -1,6 +1,6 @@
 // src/pages/Request.jsx
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import "../assets/request.css";
@@ -9,14 +9,13 @@ import NotificationModal from "../Components/NotificationModal";
 
 function Request() {
   const { user } = useUser();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [notes, setNotes] = useState("");
   const [requests, setRequests] = useState([]);
-
-  const [activeTab, setActiveTab] = useState("form"); // NEW: tab state
+  const [activeTab, setActiveTab] = useState("form");
 
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -27,12 +26,15 @@ function Request() {
     fetchRequests();
   }, []);
 
+  // ✅ Fetch all requests (for list tab)
   const fetchRequests = async () => {
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:8080/api/requests");
+      const res = await fetch("http://localhost:8081/api/requests");
       if (res.ok) {
         setRequests(await res.json());
+      } else {
+        console.warn("Failed to fetch requests:", res.status);
       }
     } catch (err) {
       console.error("Error fetching requests:", err);
@@ -41,6 +43,7 @@ function Request() {
     }
   };
 
+  // ✅ Submit new request
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -55,13 +58,13 @@ function Request() {
       author: author.trim(),
       location: user.college || "Unknown College",
       notes: notes.trim(),
-      requester: user?.name || user?.username || "Anonymous",
+      requesterName: user?.name || user?.username || "Anonymous",
       requesterEmail: user?.email,
       requesterPhone: user?.phone,
     };
 
     try {
-      const res = await fetch("http://localhost:8080/api/requests", {
+      const res = await fetch("http://localhost:8081/api/requests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newRequest),
@@ -70,10 +73,17 @@ function Request() {
       if (res.ok) {
         setModalMessage("✅ Request submitted successfully!");
         setShowModal(true);
+
+        // ✅ Clear form fields
         setTitle("");
         setAuthor("");
         setNotes("");
+
+        // ✅ Refresh request list
         fetchRequests();
+
+        // ✅ Automatically switch to "Existing Requests" tab
+        setActiveTab("list");
       } else {
         setModalMessage("❌ Failed to submit request.");
         setShowModal(true);
@@ -87,7 +97,7 @@ function Request() {
 
   const handleCloseModal = () => {
     setShowModal(false);
-    if (user) navigate("/requests");
+    // Optional: keep user on the same page; no redirect needed
   };
 
   return (
@@ -98,7 +108,7 @@ function Request() {
         <p>Request books and see what others are looking for.</p>
       </div>
 
-      {/* Pill Buttons for Tabs */}
+      {/* Tabs */}
       <ul className="tabs justify-content-center mb-4">
         <li className="nav-item">
           <button
@@ -117,7 +127,6 @@ function Request() {
           </button>
         </li>
       </ul>
-
 
       {/* Request Form */}
       {activeTab === "form" && (
@@ -171,7 +180,11 @@ function Request() {
           ) : requests && requests.length > 0 ? (
             <div className="requests-grid">
               {requests.map((req) => (
-                <div key={req.id} className="request-display" data-aos="zoom-in">
+                <div
+                  key={req.id}
+                  className="request-display"
+                  data-aos="zoom-in"
+                >
                   <h3>{req.title}</h3>
                   <p>
                     <strong>Author:</strong> {req.author || "Unknown"}
@@ -185,7 +198,7 @@ function Request() {
                     </p>
                   )}
                   <p>
-                    <em>Requested by: {req.requester}</em>
+                    <em>Requested by: {req.requesterName}</em>
                   </p>
                   {req.requesterPhone && (
                     <p>

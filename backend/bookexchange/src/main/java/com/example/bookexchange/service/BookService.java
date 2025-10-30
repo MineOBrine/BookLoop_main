@@ -48,4 +48,8 @@ public class BookService {
         }
         return false;
     }
+
+    public List<Book> getBooksByOwnerEmail(String email) {
+        return bookRepository.findByOwnerEmail(email);
+    }
 }

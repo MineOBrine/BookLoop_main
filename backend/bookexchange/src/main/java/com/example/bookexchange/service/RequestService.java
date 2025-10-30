@@ -1,4 +1,3 @@
-//service/RequestService.java//
 package com.example.bookexchange.service;
 
 import com.example.bookexchange.model.Request;
@@ -30,8 +29,12 @@ public class RequestService {
     public Optional<Request> updateRequest(Long id, Request updatedRequest) {
         return requestRepository.findById(id).map(existing -> {
             existing.setTitle(updatedRequest.getTitle());
+            existing.setAuthor(updatedRequest.getAuthor());
             existing.setLocation(updatedRequest.getLocation());
             existing.setNotes(updatedRequest.getNotes());
+            existing.setRequesterName(updatedRequest.getRequesterName());
+            existing.setRequesterEmail(updatedRequest.getRequesterEmail());
+            existing.setRequesterPhone(updatedRequest.getRequesterPhone());
             return requestRepository.save(existing);
         });
     }
@@ -42,5 +45,10 @@ public class RequestService {
             return true;
         }
         return false;
+    }
+
+    // ✅ New method
+    public List<Request> getRequestsByUser(String requesterEmail) {
+        return requestRepository.findByRequesterEmail(requesterEmail);
     }
 }

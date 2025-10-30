@@ -20,17 +20,17 @@ function Profile() {
       setLoading(true);
       try {
         const uploadsRes = await fetch(
-          `http://localhost:8080/api/books/user/${encodeURIComponent(user.email)}`
+          `http://localhost:8081/api/books/user/${encodeURIComponent(user.email)}`
         );
         if (uploadsRes.ok) setUploads(await uploadsRes.json());
 
         const requestsRes = await fetch(
-          `http://localhost:8080/api/requests/user/${encodeURIComponent(user.email)}`
+          `http://localhost:8081/api/requests/user/${encodeURIComponent(user.email)}`
         );
         if (requestsRes.ok) setRequests(await requestsRes.json());
 
         const exchangesRes = await fetch(
-          `http://localhost:8080/api/exchanges/user/${encodeURIComponent(user.email)}`
+          `http://localhost:8081/api/exchanges/user/${encodeURIComponent(user.email)}`
         );
         if (exchangesRes.ok) setExchanges(await exchangesRes.json());
       } catch (err) {
