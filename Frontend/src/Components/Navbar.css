@@ -1,5 +1,3 @@
-/* src/Components/Navbar.css */
-
 /* === NAVBAR CONTAINER === */
 .home-navbar {
   background: rgba(65, 64, 64, 0.12);
@@ -29,84 +27,83 @@ html {
   -webkit-text-fill-color: transparent;
   color: transparent;
   font-size: 1.6rem;
+  text-decoration: none;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
 }
 
-/* === NAV LINKS === */
-.home-navbar .nav-link {
+/* === UNIVERSAL NAV LINK STYLE (before + after login) === */
+.home-navbar .nav-link,
+.home-navbar .nav-item .nav-link,
+.home-navbar button.nav-link {
+  all: unset;
+  display: inline-block;
+  cursor: pointer;
+  text-align: center;
   color: #f5f5dc;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 1.05rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  padding: 8px 18px;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px) saturate(150%);
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
   transition: all 0.3s ease;
-  padding: 8px 16px;
-  border-radius: 999px; /* pill shape */
 }
 
 /* Hover effect */
-.home-navbar .nav-link:hover {
+.home-navbar .nav-link:hover,
+.home-navbar button.nav-link:hover {
   color: #ffffff;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.2);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
 }
 
-/* Active link */
-.home-navbar .nav-link.active {
-  background: rgba(255, 255, 255, 0.18);
-  color: #ffffff;
-  font-weight: 600;
-  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.3);
+/* Active state (shared before + after login) */
+.home-navbar .nav-link.active,
+.home-navbar button.nav-link.active {
+  background: rgba(255, 255, 255, 0.35);
+  color: #111111;
+  font-weight: 700;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.4),
+              0 0 12px rgba(255, 255, 255, 0.25);
+  text-shadow: none;
+  transform: translateY(0);
 }
 
-/* === BUTTONS (Primary & Outline) === */
+/* === PRIMARY BUTTON (Join Now) === */
 .home-navbar .btn-primary {
   background-color: #1e2b47 !important;
+  color: #f5f5dc;
   font-size: 1.05rem;
-  font-weight: 600;
+  font-weight: 700;
   border: none;
-  border-radius: 999px; /* pill */
+  border-radius: 999px;
   padding: 8px 18px;
   transition: all 0.3s ease;
+  text-align: center;
+  display: inline-block;
 }
 
+/* Keep Join Now clean — ignore nav link active styles */
+.home-navbar .btn-primary.active,
+.home-navbar .btn-primary:active,
+.home-navbar .btn-primary:focus {
+  background-color: #1e2b47 !important;
+  color: #f5f5dc !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* Hover effect for Join Now */
 .home-navbar .btn-primary:hover {
   background-color: #2d3a5c !important;
   transform: translateY(-1px);
   box-shadow: 0 6px 18px rgba(30, 43, 71, 0.4);
-}
-
-/* Outline Button */
-.home-navbar .btn-outline-light {
-  color: #f5f5dc;
-  border: 1.5px solid #f5f5dc;
-  font-size: 1.05rem;
-  font-weight: 600;
-  border-radius: 999px;
-  transition: all 0.3s ease;
-  padding: 8px 18px;
-}
-
-.home-navbar .btn-outline-light:hover {
-  background-color: #f5f5dc;
-  color: #1e2b47;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(245, 245, 220, 0.3);
-}
-
-/* === SIGN OUT BUTTON === */
-.tabs .signout-btn {
-  background: rgba(255, 42, 42, 0.15);
-  color: #ff4d4d;
-  border: 1.5px solid rgba(255, 77, 77, 0.3);
-  border-radius: 999px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  padding: 8px 18px;
-}
-
-.tabs .signout-btn:hover {
-  background: rgba(255, 42, 42, 0.25);
-  color: #ff0101;
-  box-shadow: 0 8px 20px rgba(255, 0, 0, 0.25);
-  transform: translateY(-1px);
 }
 
 /* === RESPONSIVE === */
@@ -116,9 +113,16 @@ html {
   }
 
   .home-navbar .nav-link,
-  .home-navbar .btn-primary,
-  .home-navbar .btn-outline-light {
+  .home-navbar .btn-primary {
     font-size: 1rem;
     padding: 6px 14px;
   }
+}
+
+/* Prevent underline on Join Now */
+.home-navbar .btn-primary,
+.home-navbar .btn-primary:hover,
+.home-navbar .btn-primary:focus,
+.home-navbar .btn-primary:active {
+  text-decoration: none !important;
 }

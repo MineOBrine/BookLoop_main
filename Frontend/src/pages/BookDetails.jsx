@@ -98,7 +98,15 @@ const BookDetails = () => {
           <p><strong>Price:</strong> {book.price}</p>
           <p><strong>Owner:</strong> {book.owner || "Unknown"}</p>
           <p><strong>Contact:</strong> {book.ownerPhone || "Not provided"}</p>
-          <p><strong>Location:</strong> {book.location || "Not specified"}</p>
+          <p>
+            <strong>Location:</strong>{" "}
+            {book.location ||
+              book.ownerCollege ||
+              user?.college ||
+              "Not specified"}
+          </p>
+
+
 
           <div className="chips-container">
             <span className="book-category">{book.category}</span>

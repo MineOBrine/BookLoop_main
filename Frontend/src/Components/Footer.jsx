@@ -15,7 +15,7 @@ export default function Footer() {
         )}
       </div>
       <div className="footer-right text-center text-md-end">
-        <p className="mb-1">📧 acsc.business@bookloop.com | 📞 +91 90000 00000</p>
+        <p className="mb-1">📧 acsc.business@bookloop.com | 📞 +91 91379 32100</p>
         <p className="mb-0 small">&copy; {new Date().getFullYear()} BookLoop. All rights reserved.</p>
       </div>
     </footer>
