@@ -1,6 +1,6 @@
-// src/App.jsx
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+import { useUser } from "./context/UserContext"; // ✅ Import context hook
 import Register from "./pages/Register";
 import Listings from "./pages/Listings";
 import Home from "./pages/Home";
@@ -13,6 +13,24 @@ import Profile from "./pages/Profile";
 import BookDetails from "./pages/BookDetails";
 
 function App() {
+  const { loadingUser } = useUser(); // ✅ Access loading flag
+
+  // 🌀 Prevent route flickering while user is restoring from localStorage
+  if (loadingUser) {
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100 bg-dark text-light">
+        <div className="text-center">
+          <div
+            className="spinner-border text-light mb-3"
+            style={{ width: "3rem", height: "3rem" }}
+            role="status"
+          ></div>
+          <p className="fs-5">Loading BookLoop...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Routes>
       {/* Shared layout for routes */}

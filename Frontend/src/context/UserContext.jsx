@@ -5,22 +5,29 @@ export const useUser = () => useContext(UserContext);
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [books, setBooks] = useState([]); // Prevents .filter errors
+  const [books, setBooks] = useState([]);
+  const [loadingUser, setLoadingUser] = useState(true);
 
   // ✅ Restore user from localStorage on page refresh
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
+    const restoreUser = () => {
+      const token = localStorage.getItem("token");
+      const storedUser = localStorage.getItem("user");
 
-    if (token && storedUser) {
-      try {
-        const parsedUser = JSON.parse(storedUser);
-        setUser({ ...parsedUser, token }); // ✅ ensure token persists in user object
-      } catch (err) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
+      if (token && storedUser) {
+        try {
+          const parsedUser = JSON.parse(storedUser);
+          setUser({ ...parsedUser, token });
+        } catch {
+          console.warn("Invalid user data in storage — clearing.");
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+        }
       }
-    }
+      setLoadingUser(false);
+    };
+
+    restoreUser();
   }, []);
 
   // --- Register User ---
@@ -69,21 +76,16 @@ export const UserProvider = ({ children }) => {
 
     const data = await response.json();
 
-    // ✅ Save token to localStorage
-    localStorage.setItem("token", data.token);
-
-    // ✅ Build full user object (includes token)
     const fullUser = {
       email,
-      name: data.name,
-      username: data.username,
-      college: data.college,
+      username: data.username || data.name || "",
+      college: data.college || "",
       phone: data.phone || "",
-      interests: data.interests || [],
-      token: data.token, // 🟢 crucial for uploads / auth requests
+      interests: Array.isArray(data.interests) ? data.interests : [],
+      token: data.token,
     };
 
-    // Save user to localStorage and state
+    localStorage.setItem("token", data.token);
     localStorage.setItem("user", JSON.stringify(fullUser));
     setUser(fullUser);
 
@@ -107,7 +109,9 @@ export const UserProvider = ({ children }) => {
     };
 
     const response = await fetch(url, { ...options, headers });
-    if (response.status === 401 || response.status === 403) logoutUser();
+    if (response.status === 401 || response.status === 403) {
+      logoutUser();
+    }
     return response;
   };
 
@@ -118,6 +122,7 @@ export const UserProvider = ({ children }) => {
         setUser,
         books,
         setBooks,
+        loadingUser,
         registerUser,
         loginUser,
         logoutUser,

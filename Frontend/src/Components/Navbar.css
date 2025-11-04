@@ -3,7 +3,7 @@
   background: rgba(65, 64, 64, 0.12);
   backdrop-filter: blur(12px) saturate(150%);
   -webkit-backdrop-filter: blur(12px) saturate(150%);
-  padding: 0.8rem 2rem;
+  padding: 0.55rem 2rem; /* thinner navbar */
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   position: fixed;
@@ -14,7 +14,17 @@
 /* Smooth scrolling offset */
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 60.5px;
+  scroll-padding-top: 55px;
+}
+
+/* === STRUCTURE & LAYOUT === */
+.navbar-container {
+  display: flex;
+  align-items: center; /* vertically center everything */
+  justify-content: space-between;
+  max-width: 1250px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 /* === BRAND / LOGO === */
@@ -26,17 +36,15 @@ html {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   text-decoration: none;
   border: none;
   background-color: transparent;
   cursor: pointer;
 }
 
-/* === UNIVERSAL NAV LINK STYLE (before + after login) === */
-.home-navbar .nav-link,
-.home-navbar .nav-item .nav-link,
-.home-navbar button.nav-link {
+/* === UNIVERSAL NAV LINK STYLE === */
+.home-navbar .nav-link {
   all: unset;
   display: inline-block;
   cursor: pointer;
@@ -46,16 +54,16 @@ html {
   font-size: 1.05rem;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 999px;
-  padding: 8px 18px;
+  padding: 7px 16px;
   border: 1.5px solid rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px) saturate(150%);
   -webkit-backdrop-filter: blur(10px) saturate(150%);
   transition: all 0.3s ease;
+  vertical-align: middle;
 }
 
-/* Hover effect */
-.home-navbar .nav-link:hover,
-.home-navbar button.nav-link:hover {
+/* Hover state */
+.home-navbar .nav-link:hover {
   color: #ffffff;
   background: rgba(255, 255, 255, 0.2);
   text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
@@ -63,66 +71,129 @@ html {
   box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
 }
 
-/* Active state (shared before + after login) */
-.home-navbar .nav-link.active,
-.home-navbar button.nav-link.active {
-  background: rgba(255, 255, 255, 0.35);
-  color: #111111;
+/* Active (route active) state */
+.home-navbar .nav-link.active {
+  background: rgba(95, 127, 227, 0.35);
+  color: #ffffff !important;
   font-weight: 700;
-  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.4),
-              0 0 12px rgba(255, 255, 255, 0.25);
-  text-shadow: none;
+  box-shadow:
+    inset 0 0 0 2px rgba(95, 127, 227, 0.4),
+    0 0 12px rgba(95, 127, 227, 0.25);
+  text-shadow: 0 0 6px rgba(95, 127, 227, 0.4);
   transform: translateY(0);
+}
+
+/* Override browser's :active and :focus dark flicker */
+.home-navbar .nav-link:focus,
+.home-navbar .nav-link:focus-visible,
+.home-navbar .nav-link:active {
+  color: #ffffff !important;
+  background: rgba(95, 127, 227, 0.35) !important;
+  outline: none !important;
+  box-shadow:
+    inset 0 0 0 2px rgba(95, 127, 227, 0.4),
+    0 0 12px rgba(95, 127, 227, 0.25) !important;
+  text-shadow: 0 0 6px rgba(95, 127, 227, 0.4);
 }
 
 /* === PRIMARY BUTTON (Join Now) === */
 .home-navbar .btn-primary {
-  background-color: #1e2b47 !important;
+  background-color: #1e2b47;
   color: #f5f5dc;
   font-size: 1.05rem;
   font-weight: 700;
   border: none;
   border-radius: 999px;
-  padding: 8px 18px;
+  padding: 7px 16px;
   transition: all 0.3s ease;
   text-align: center;
   display: inline-block;
-}
-
-/* Keep Join Now clean — ignore nav link active styles */
-.home-navbar .btn-primary.active,
-.home-navbar .btn-primary:active,
-.home-navbar .btn-primary:focus {
-  background-color: #1e2b47 !important;
-  color: #f5f5dc !important;
+  text-decoration: none !important;
+  vertical-align: middle;
+  outline: none !important;
   box-shadow: none !important;
-  transform: none !important;
 }
 
-/* Hover effect for Join Now */
+/* Hover + Focus cleanup */
 .home-navbar .btn-primary:hover {
-  background-color: #2d3a5c !important;
+  background-color: #2d3a5c;
   transform: translateY(-1px);
   box-shadow: 0 6px 18px rgba(30, 43, 71, 0.4);
 }
 
-/* === RESPONSIVE === */
-@media (max-width: 768px) {
-  .home-navbar {
-    padding: 0.8rem 1.5rem;
-  }
-
-  .home-navbar .nav-link,
-  .home-navbar .btn-primary {
-    font-size: 1rem;
-    padding: 6px 14px;
-  }
+.home-navbar .btn-primary:focus,
+.home-navbar .btn-primary:active,
+.home-navbar .btn-primary:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  background-color: #1e2b47 !important;
+  color: #f5f5dc !important;
 }
 
-/* Prevent underline on Join Now */
-.home-navbar .btn-primary,
-.home-navbar .btn-primary:hover,
-.home-navbar .btn-primary:focus,
-.home-navbar .btn-primary:active {
-  text-decoration: none !important;
+/* === NAV LINKS LIST === */
+.nav-links {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  gap: 1rem;
+  margin: 0;
+}
+
+.nav-links li {
+  list-style: none;
+}
+
+/* === MOBILE MENU === */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: #f5f5dc;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .home-navbar {
+    padding: 0.6rem 1.5rem;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .nav-links {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: rgba(30, 43, 71, 0.95);
+    backdrop-filter: blur(10px);
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 250px;
+    padding: 1rem;
+    border-radius: 0 0 0 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+  }
+
+  .nav-links.open {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+  }
+
+  .nav-links li {
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+
+  .nav-link,
+  .btn-primary {
+    width: 100%;
+    text-align: left;
+  }
 }

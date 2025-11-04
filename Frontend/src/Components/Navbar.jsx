@@ -1,12 +1,16 @@
+// src/Components/Navbar.jsx
 import React, { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import "../Components/Navbar.css";
 import { useUser } from "../context/UserContext";
+import { Menu, X } from "lucide-react";
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user } = useUser();
   const location = useLocation();
+
+  const isHomePage = location.pathname === "/";
 
   const scrollToSection = (id) => {
     const section = document.querySelector(id);
@@ -16,11 +20,17 @@ function Navbar() {
     }
   };
 
-  const isHomePage = location.pathname === "/";
+  const navLinks = [
+    { to: "/", label: "Home" },
+    { to: "/listings", label: "Listings" },
+    { to: "/request", label: "Request" },
+    { to: "/upload", label: "Upload" },
+    { to: "/profile", label: "Profile" },
+  ];
 
   return (
-    <nav className="home-navbar navbar navbar-expand-lg fixed-top shadow-sm">
-      <div className="container">
+    <nav className="home-navbar">
+      <div className="navbar-container">
         {/* === Logo === */}
         {isHomePage ? (
           <button
@@ -39,83 +49,73 @@ function Navbar() {
           </NavLink>
         )}
 
-        {/* === Mobile toggle === */}
+        {/* === Mobile Toggle === */}
         <button
-          className="navbar-toggler"
-          type="button"
-          onClick={() => setMenuOpen(!menuOpen)}
+          className="menu-toggle"
+          onClick={() => setMenuOpen((prev) => !prev)}
+          aria-label="Toggle menu"
         >
-          <span className="navbar-toggler-icon"></span>
+          {menuOpen ? <X size={26} /> : <Menu size={26} />}
         </button>
 
-        {/* === Nav Links === */}
-        <div className={`collapse navbar-collapse ${menuOpen ? "show" : ""}`}>
-          <ul className="navbar-nav ms-auto align-items-lg-center">
-            {!user ? (
-              <>
-                {isHomePage && (
-                  <>
-                    <li className="nav-item mx-2">
-                      <button
-                        className="nav-link"
-                        onClick={() => scrollToSection("#how-it-works")}
-                      >
-                        How It Works
-                      </button>
-                    </li>
-                    <li className="nav-item mx-2">
-                      <button
-                        className="nav-link"
-                        onClick={() => scrollToSection("#features")}
-                      >
-                        Features
-                      </button>
-                    </li>
-                    <li className="nav-item mx-2">
-                      <button
-                        className="nav-link"
-                        onClick={() => scrollToSection("#about")}
-                      >
-                        About
-                      </button>
-                    </li>
-                  </>
-                )}
-                <li className="nav-item mx-2">
-                  <NavLink
-                    to="/register"
-                    className="btn-primary"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Join Now
-                  </NavLink>
-                </li>
-              </>
-            ) : (
-              <>
-                {[
-                  { to: "/", label: "Home" },
-                  { to: "/listings", label: "Listings" },
-                  { to: "/request", label: "Request" },
-                  { to: "/upload", label: "Upload" },
-                  { to: "/profile", label: "Profile" },
-                ].map((link) => (
-                  <li className="nav-item mx-2" key={link.to}>
-                    <NavLink
-                      to={link.to}
-                      className={({ isActive }) =>
-                        `nav-link${isActive ? " active" : ""}`
-                      }
-                      onClick={() => setMenuOpen(false)}
+        {/* === Navigation Links === */}
+        <ul className={`nav-links ${menuOpen ? "open" : ""}`}>
+          {!user ? (
+            <>
+              {isHomePage && (
+                <>
+                  <li>
+                    <button
+                      className="nav-link"
+                      onClick={() => scrollToSection("#how-it-works")}
                     >
-                      {link.label}
-                    </NavLink>
+                      How It Works
+                    </button>
                   </li>
-                ))}
-              </>
-            )}
-          </ul>
-        </div>
+                  <li>
+                    <button
+                      className="nav-link"
+                      onClick={() => scrollToSection("#features")}
+                    >
+                      Features
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className="nav-link"
+                      onClick={() => scrollToSection("#about")}
+                    >
+                      About
+                    </button>
+                  </li>
+                </>
+              )}
+              <li>
+                <NavLink
+                  to="/register"
+                  className="btn-primary"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Join Now
+                </NavLink>
+              </li>
+            </>
+          ) : (
+            navLinks.map(({ to, label }) => (
+              <li key={to}>
+                <NavLink
+                  to={to}
+                  className={({ isActive }) =>
+                    `nav-link${isActive ? " active" : ""}`
+                  }
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {label}
+                </NavLink>
+              </li>
+            ))
+          )}
+        </ul>
       </div>
     </nav>
   );
