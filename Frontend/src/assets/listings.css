@@ -45,7 +45,7 @@
   position: relative;
 }
 
-/* Select Styling */
+/* Final select styling (later version kept) */
 .filters select {
   width: 180px;
   height: 42px;
@@ -57,7 +57,6 @@
   font-size: 0.95rem;
   backdrop-filter: blur(10px) saturate(150%);
   -webkit-backdrop-filter: blur(10px) saturate(150%);
-  transition: all 0.3s ease;
   outline: none;
   cursor: pointer;
   text-align: center;
@@ -66,18 +65,20 @@
   background-repeat: no-repeat;
   background-position: right 1.2rem center;
   background-size: 0.8rem;
+  transition: none !important;
 }
 
 .filters select:hover {
   background: rgba(255, 255, 255, 0.15);
   border-color: rgba(255, 255, 255, 0.25);
   box-shadow: 0 0 10px rgba(245, 230, 202, 0.15);
-  transform: translateY(-1px);
+  transform: none !important;
 }
 
 .filters select:focus {
   border-color: #a4b6f1;
   box-shadow: 0 0 0 2px rgba(164, 182, 241, 0.25);
+  transform: none !important;
 }
 
 .filters select option {
@@ -148,15 +149,15 @@
 .chips-container {
   margin-top: auto;
   display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  gap: 0.6rem;
+  justify-content: space-between;
+  align-items: center;
   padding-top: 1rem;
 }
 
+/* Shared chip style */
 .book-category,
 .book-condition {
-  padding: 0.35rem 0.7rem;
+  padding: 0.35rem 0.75rem;
   border-radius: 0.5rem;
   font-size: 0.75rem;
   font-weight: 600;
@@ -165,16 +166,25 @@
   white-space: nowrap;
 }
 
+/* Left-aligned chip */
 .book-category {
   background: rgba(0, 0, 0, 0.6);
+  align-self: flex-start;
 }
 
+/* Right-aligned chip */
+.book-condition {
+  align-self: flex-end;
+}
+
+/* Condition colors */
 .condition-good {
   background: rgba(25, 135, 84, 0.9);
 }
 .condition-fair {
   background: rgba(253, 126, 20, 0.9);
 }
+
 .condition-new {
   background: rgba(13, 110, 253, 0.9);
 }

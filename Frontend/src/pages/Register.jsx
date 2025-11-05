@@ -13,8 +13,8 @@ function Register() {
   const { registerUser, loginUser, user } = useUser();
   const navigate = useNavigate();
 
-  const [mode, setMode] = useState("signup"); // "signup" or "signin"
-  const [step, setStep] = useState(1); // step 1: info | step 2: interests
+  const [mode, setMode] = useState("signup");
+  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     name: "",
     username: "",
@@ -28,13 +28,18 @@ function Register() {
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState("");
 
+  const [passwordStrength, setPasswordStrength] = useState({
+    score: 0,
+    message: "",
+    color: "",
+  });
+
   const interestsList = categories.filter((cat) => cat !== "Other");
 
   useEffect(() => {
     AOS.init({ duration: 900, once: true });
   }, []);
 
-  // Redirect if already logged in
   useEffect(() => {
     if (user) navigate("/");
   }, [user, navigate]);
@@ -49,6 +54,41 @@ function Register() {
         ? prev.interests.filter((i) => i !== interest)
         : [...prev.interests, interest],
     }));
+
+  const analyzePassword = (password) => {
+    let score = 0;
+    if (password.length >= 8) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+
+    let message = "";
+    let color = "";
+
+    switch (score) {
+      case 0:
+      case 1:
+        message = "Weak — try adding more characters";
+        color = "#ff4d4d";
+        break;
+      case 2:
+        message = "Fair — add numbers or symbols";
+        color = "#ffa500";
+        break;
+      case 3:
+        message = "Good — almost there";
+        color = "#f1c40f";
+        break;
+      case 4:
+        message = "Strong password ✅";
+        color = "#2ecc71";
+        break;
+      default:
+        break;
+    }
+
+    setPasswordStrength({ score, message, color });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -80,28 +120,27 @@ function Register() {
   };
 
   return (
-    <div className="register-page bg-gradient">
-      <section className="hero-section register-hero">
-        <div className="container hero-container" data-aos="fade-up">
-          {/* Left Column */}
+    <div className="register-page">
+      <section className="register-hero">
+        <div className="hero-container" data-aos="fade-up">
+          {/* ---------- LEFT: Text Section ---------- */}
           <div className="hero-text" data-aos="fade-right">
-            <h1 className="display-3 fw-bold text-gradient mb-4">
-              {mode === "signup" ? "Join BookLoop" : "Welcome Back"}
-            </h1>
-            <p className="lead fs-5 text-light">
+            <h1>{mode === "signup" ? "Join BookLoop" : "Welcome Back"}</h1>
+            <p className="lead">
               {mode === "signup"
-                ? "Sign up to start exchanging books with your community"
-                : "Sign in to continue your journey"}
+                ? "Sign up to start exchanging books with your community."
+                : "Sign in to continue your journey."}
             </p>
           </div>
 
-          {/* Right Column */}
+          {/* ---------- RIGHT: Form Section ---------- */}
           <div className="hero-form" data-aos="fade-left">
             <div className="register-card">
               {mode === "signup" ? (
                 step === 1 ? (
                   <form onSubmit={handleSubmit}>
                     {error && <p className="error-text">{error}</p>}
+
                     <input
                       type="text"
                       name="name"
@@ -131,7 +170,12 @@ function Register() {
                       name="phone"
                       placeholder="Phone Number"
                       value={formData.phone}
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, "").slice(0, 10);
+                        setFormData((prev) => ({ ...prev, phone: value }));
+                      }}
+                      pattern="\d{10}"
+                      title="Phone number must be exactly 10 digits"
                       required
                     />
                     <input
@@ -147,21 +191,40 @@ function Register() {
                       name="password"
                       placeholder="Password"
                       value={formData.password}
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        handleChange(e);
+                        analyzePassword(e.target.value);
+                      }}
                       required
                     />
-                    <button
-                      type="submit"
-                      className="btn btn-lg btn-primary w-100 mt-3"
-                    >
+
+                    {/* Password Strength Meter */}
+                    <div className="password-strength">
+                      <div
+                        className="strength-bar"
+                        style={{
+                          width: `${(passwordStrength.score / 4) * 100}%`,
+                          backgroundColor: passwordStrength.color,
+                        }}
+                      ></div>
+                      <small style={{ color: passwordStrength.color }}>
+                        {passwordStrength.message}
+                      </small>
+                    </div>
+
+                    {/* Primary Button */}
+                    <button type="submit" className="btn">
                       Next
                     </button>
-                    <div className="google-btn disabled mt-3">
+
+                    {/* Google Button */}
+                    <div className="google-btn">
                       <FcGoogle size={22} style={{ marginRight: "8px" }} />
-                      Continue with Google{" "}
-                      <span className="note">(Coming soon)</span>
+                      Continue with Google <span className="note">(Soon)</span>
                     </div>
-                    <p className="switch-text mt-3">
+
+                    {/* Switch Mode */}
+                    <p className="switch-text">
                       Already have an account?{" "}
                       <span
                         className="switch-link"
@@ -176,12 +239,13 @@ function Register() {
                   </form>
                 ) : (
                   <form onSubmit={handleSubmit}>
-                    <h3 className="mb-4 text-gradient">Select Your Interests</h3>
+                    <h3 className="interests-title">Select Your Interests</h3>
                     {error && <p className="error-text">{error}</p>}
+
                     <div className="interests-grid">
-                      {interestsList.map((interest, i) => (
+                      {interestsList.map((interest) => (
                         <div
-                          key={i}
+                          key={interest}
                           className={`interest-card ${
                             formData.interests.includes(interest)
                               ? "selected"
@@ -193,10 +257,8 @@ function Register() {
                         </div>
                       ))}
                     </div>
-                    <button
-                      type="submit"
-                      className="btn btn-lg btn-primary w-100 mt-3"
-                    >
+
+                    <button type="submit" className="btn">
                       Finish
                     </button>
                   </form>
@@ -204,6 +266,7 @@ function Register() {
               ) : (
                 <form onSubmit={handleSubmit}>
                   {error && <p className="error-text">{error}</p>}
+
                   <input
                     type="email"
                     name="email"
@@ -220,13 +283,12 @@ function Register() {
                     onChange={handleChange}
                     required
                   />
-                  <button
-                    type="submit"
-                    className="btn btn-lg btn-primary w-100 mt-3"
-                  >
+
+                  <button type="submit" className="btn">
                     Sign In
                   </button>
-                  <p className="switch-text mt-3">
+
+                  <p className="switch-text">
                     Don’t have an account?{" "}
                     <span
                       className="switch-link"
